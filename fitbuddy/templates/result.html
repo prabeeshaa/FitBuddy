@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Your plan · FitBuddy{% endblock %}
+{% block content %}
+<section class="result-header">
+  <div><p class="eyebrow">YOUR FITBUDDY PLAN</p><h1>Keep showing up, {{ user.name }}.</h1><p class="hero-lede">A plan shaped around <strong>{{ user.goal.title() }}</strong> at <strong>{{ user.intensity.title() }}</strong> intensity.</p></div>
+  <a class="button button-secondary" href="{{ url_for('home') }}">Create another plan</a>
+</section>
+{% if message %}<div class="alert alert-success" role="status">{{ message }}</div>{% endif %}
+<section class="profile-pills" aria-label="Profile summary">
+  <span><b>User ID</b>{{ user.user_id }}</span><span><b>Age</b>{{ user.age }}</span><span><b>Weight</b>{{ "%.1f"|format(user.weight_kg) }} kg</span><span><b>Goal</b>{{ user.goal.title() }}</span><span><b>Intensity</b>{{ user.intensity.title() }}</span>
+</section>
+<section class="results-grid">
+  <article class="card plan-card">
+    <div class="section-heading"><div><p class="eyebrow">{{ 'UPDATED PLAN' if plan.updated_plan else 'WEEK ONE' }}</p><h2>Seven-day movement map</h2></div><span class="status-dot">● {{ plan.ai_source }}</span></div>
+    <pre class="plan-output">{{ display_plan }}</pre>
+    {% if plan.updated_plan %}<details class="original-plan"><summary>View original plan</summary><pre class="plan-output compact">{{ plan.original_plan }}</pre></details>{% endif %}
+  </article>
+  <aside class="side-column">
+    <article class="card tip-card"><p class="eyebrow">RECOVERY + NUTRITION</p><h2>A small thing that helps</h2><p>{{ plan.nutrition_tip }}</p></article>
+    <article class="card feedback-card"><p class="eyebrow">MAKE IT YOURS</p><h2>What should change?</h2><p class="muted">Ask for more cardio, more rest, shorter sessions, or another practical adjustment.</p><form action="{{ url_for('submit_feedback_form') }}" method="post" class="stacked-form"><input type="hidden" name="user_id" value="{{ user.user_id }}"><label class="sr-only" for="feedback">Feedback</label><textarea id="feedback" name="feedback" rows="5" maxlength="1000" placeholder="Example: Add a second recovery day and keep sessions under 30 minutes." required></textarea><button class="button button-dark" type="submit">Update my plan <span>↗</span></button></form>{% if plan.feedback_count %}<p class="form-footnote">Updated {{ plan.feedback_count }} time{{ 's' if plan.feedback_count != 1 else '' }}.</p>{% endif %}</article>
+  </aside>
+</section>
+{% endblock %}

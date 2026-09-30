@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Admin view · FitBuddy{% endblock %}
+{% block content %}
+<section class="result-header"><div><p class="eyebrow">ADMIN / COACH VIEW</p><h1>Everyone’s plans, in one place.</h1><p class="hero-lede">Review saved profiles and compare original plans with feedback-based updates.</p></div><span class="count-badge">{{ users|length }} profile{{ 's' if users|length != 1 else '' }}</span></section>
+<section class="card table-card">
+  {% if users %}
+  <div class="table-wrap"><table><thead><tr><th>Profile</th><th>Goal</th><th>Intensity</th><th>Original plan</th><th>Latest update</th></tr></thead><tbody>{% for user in users %}<tr><td><strong>{{ user.name }}</strong><small>{{ user.user_id }} · age {{ user.age }} · {{ "%.1f"|format(user.weight_kg) }} kg</small></td><td>{{ user.goal.title() }}</td><td><span class="intensity intensity-{{ user.intensity }}">{{ user.intensity.title() }}</span></td><td><pre>{{ user.plan.original_plan if user.plan else '—' }}</pre></td><td><pre>{{ user.plan.updated_plan if user.plan and user.plan.updated_plan else 'No update yet' }}</pre></td></tr>{% endfor %}</tbody></table></div>
+  {% else %}<div class="empty-state"><span>✦</span><h2>No profiles yet</h2><p>Generate a plan from the home page to see it here.</p><a class="button button-primary" href="{{ url_for('home') }}">Create first plan</a></div>{% endif %}
+</section>
+{% endblock %}

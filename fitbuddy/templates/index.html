@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Create your plan · FitBuddy{% endblock %}
+{% block content %}
+<section class="hero-grid">
+  <div class="hero-copy">
+    <p class="eyebrow">PERSONALIZED FITNESS, MADE SIMPLE</p>
+    <h1>Build a routine<br><em>you’ll return to.</em></h1>
+    <p class="hero-lede">Tell us where you are starting. FitBuddy creates a practical seven-day plan, a helpful recovery tip, and a path that can adapt as you learn what works.</p>
+    <div class="hero-notes">
+      <div><span class="note-icon">01</span><span>Seven focused days</span></div>
+      <div><span class="note-icon">02</span><span>Feedback-friendly updates</span></div>
+      <div><span class="note-icon">03</span><span>General wellness guidance</span></div>
+    </div>
+  </div>
+  <div class="card form-card">
+    <div class="card-heading">
+      <div><p class="eyebrow">START HERE</p><h2>Your fitness snapshot</h2></div>
+      <span class="sparkle">✦</span>
+    </div>
+    {% if errors %}
+      <div class="alert alert-error" role="alert">
+        <strong>Check the details below.</strong>
+        <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+      </div>
+    {% endif %}
+    <form action="{{ url_for('generate_workout_form') }}" method="post" class="stacked-form">
+      <div class="field-grid two-col">
+        <label>Full name<input name="name" value="{{ values.name if values else '' }}" placeholder="Alex Morgan" required maxlength="80"></label>
+        <label>User ID<input name="user_id" value="{{ values.user_id if values else '' }}" placeholder="alex-001" pattern="[A-Za-z0-9_-]+" required maxlength="40"><small>Use this later for feedback.</small></label>
+      </div>
+      <div class="field-grid two-col">
+        <label>Age<input type="number" name="age" value="{{ values.age if values else '' }}" min="13" max="100" placeholder="28" required></label>
+        <label>Weight <span class="muted">(kg)</span><input type="number" name="weight_kg" value="{{ values.weight_kg if values else '' }}" min="25" max="400" step="0.1" placeholder="70" required></label>
+      </div>
+      <div class="field-grid two-col">
+        <label>Primary goal<select name="goal" required><option value="">Choose a goal</option>{% for goal in goals %}<option value="{{ goal }}" {% if values and values.goal == goal %}selected{% endif %}>{{ goal.title() }}</option>{% endfor %}</select></label>
+        <label>Workout intensity<select name="intensity" required><option value="">Choose intensity</option>{% for intensity in intensities %}<option value="{{ intensity }}" {% if values and values.intensity == intensity %}selected{% endif %}>{{ intensity.title() }}</option>{% endfor %}</select></label>
+      </div>
+      <button class="button button-primary" type="submit">Generate my plan <span>→</span></button>
+      <p class="form-footnote">Your information is stored locally in SQLite. FitBuddy is not a substitute for medical advice.</p>
+    </form>
+  </div>
+</section>
+<section class="trust-strip"><span>Designed for real schedules</span><span>•</span><span>Works with Gemini or offline starter mode</span><span>•</span><span>Built with FastAPI</span></section>
+{% endblock %}
+
